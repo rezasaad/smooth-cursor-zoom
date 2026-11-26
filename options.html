@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تنظیمات Smooth Cursor Zoom</title>
+  <link rel="stylesheet" href="shared/theme.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="hero">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img">
+          <circle cx="28" cy="28" r="16"></circle>
+          <path d="M39.5 39.5 53 53"></path>
+          <path d="M28 20v16M20 28h16"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="eyebrow">SMOOTH CURSOR ZOOM</p>
+        <h1>تنظیمات</h1>
+        <p class="subtitle">زوم نرم روی محل نشانگر ماوس بدون جابه‌جایی ناخواسته.</p>
+      </div>
+    </header>
+
+    <form id="settings-form" autocomplete="off">
+      <section class="card" aria-labelledby="shortcut-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="shortcut-title">شورتکات و رفتار</h2>
+            <p>ترکیب کلید یا دکمهٔ موس و نحوهٔ فعال‌سازی زوم را مشخص کنید.</p>
+          </div>
+        </div>
+
+        <button id="shortcut-recorder" class="shortcut-recorder" type="button" aria-describedby="shortcut-help">
+          <span class="shortcut-label">شورتکات اصلی زوم</span>
+          <span id="shortcut-value" class="key-row" dir="ltr"></span>
+          <span class="record-hint">برای تغییر کلیک کنید</span>
+        </button>
+        <p id="shortcut-help" class="help">ترکیب دارای Ctrl، Alt یا Shift پیشنهاد می‌شود.</p>
+
+        <div class="divider"></div>
+
+        <div class="mode-grid" role="radiogroup" aria-label="نوع عملکرد">
+          <label class="mode-option">
+            <input type="radio" name="mode" value="hold">
+            <span class="mode-content">
+              <strong>نگه‌داشتن (Hold)</strong>
+              <small>تا وقتی کلید پایین است زوم بماند.</small>
+            </span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="mode" value="toggle">
+            <span class="mode-content">
+              <strong>روشن/خاموش (Toggle)</strong>
+              <small>با هر بار فشردن، زوم تغییر وضعیت دهد.</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <label for="zoom-range">مقدار زوم</label>
+            <output id="zoom-output" for="zoom-range">2.00×</output>
+          </div>
+          <input id="zoom-range" type="range" min="1.10" max="6" step="0.05">
+          <div class="range-ends"><span>1.10×</span><span>6.00×</span></div>
+        </div>
+
+        <div class="timing-grid">
+          <div class="control-group compact">
+            <div class="control-label">
+              <label for="duration-in">مدت زوم‌این</label>
+              <output id="duration-in-output" for="duration-in">380 ms</output>
+            </div>
+            <input id="duration-in" type="range" min="120" max="1000" step="20">
+          </div>
+          <div class="control-group compact">
+            <div class="control-label">
+              <label for="duration-out">مدت برگشت</label>
+              <output id="duration-out-output" for="duration-out">320 ms</output>
+            </div>
+            <input id="duration-out" type="range" min="120" max="1000" step="20">
+          </div>
+        </div>
+
+        <fieldset class="easing-fieldset">
+          <legend>منحنی حرکت</legend>
+          <div class="easing-options">
+            <label><input type="radio" name="easing" value="smooth"><span>نرم</span></label>
+            <label><input type="radio" name="easing" value="balanced"><span>متعادل</span></label>
+            <label><input type="radio" name="easing" value="snappy"><span>سریع</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card" aria-labelledby="effects-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="effects-title">افکت‌های تصویر</h2>
+            <p>شدت هر افکت را به‌صورت مستقل تنظیم و در کادر مقابل بررسی کنید.</p>
+          </div>
+        </div>
+
+        <div class="effects-layout">
+          <div class="effects-controls">
+            <div class="mini-range-grid">
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="motion-blur">Motion Blur</label>
+                  <output id="motion-blur-output" for="motion-blur">4.0 px</output>
+                </div>
+                <input id="motion-blur" type="range" min="0" max="16" step="0.5">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="cursor-scale">بزرگ‌نمایی کرسر</label>
+                  <output id="cursor-scale-output" for="cursor-scale">2.00×</output>
+                </div>
+                <input id="cursor-scale" type="range" min="1" max="4" step="0.05">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="page-defocus">دی‌فوکوس صفحه</label>
+                  <output id="page-defocus-output" for="page-defocus">0.0 px</output>
+                </div>
+                <input id="page-defocus" type="range" min="0" max="14" step="0.1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="brightness">روشنایی</label>
+                  <output id="brightness-output" for="brightness">100%</output>
+                </div>
+                <input id="brightness" type="range" min="40" max="180" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="contrast">کنتراست</label>
+                  <output id="contrast-output" for="contrast">100%</output>
+                </div>
+                <input id="contrast" type="range" min="40" max="220" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="vignette">وینیت</label>
+                  <output id="vignette-output" for="vignette">38%</output>
+                </div>
+                <input id="vignette" type="range" min="0" max="100" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="pixel-strength">ساب‌پیکسل RGB</label>
+                  <output id="pixel-strength-output" for="pixel-strength">20%</output>
+                </div>
+                <input id="pixel-strength" type="range" min="0" max="100" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="pixel-size">اندازهٔ پیکسل</label>
+                  <output id="pixel-size-output" for="pixel-size">4.0 px</output>
+                </div>
+                <input id="pixel-size" type="range" min="2" max="10" step="0.5">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="tone-strength">رنگ سینمایی</label>
+                  <output id="tone-strength-output" for="tone-strength">24%</output>
+                </div>
+                <input id="tone-strength" type="range" min="0" max="100" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="noise-strength">نویز و گرین</label>
+                  <output id="noise-strength-output" for="noise-strength">10%</output>
+                </div>
+                <input id="noise-strength" type="range" min="0" max="100" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="rgb-strength">ماسک RGB</label>
+                  <output id="rgb-strength-output" for="rgb-strength">16%</output>
+                </div>
+                <input id="rgb-strength" type="range" min="0" max="100" step="1">
+              </div>
+              <div class="control-group compact">
+                <div class="control-label">
+                  <label for="flicker-strength">فلیکر CRT</label>
+                  <output id="flicker-strength-output" for="flicker-strength">10%</output>
+                </div>
+                <input id="flicker-strength" type="range" min="0" max="100" step="1">
+              </div>
+            </div>
+
+            <div class="select-setting-control">
+              <label for="vignette-center">مرکز روشنایی وینیت</label>
+              <select id="vignette-center">
+                <option value="viewport">مرکز صفحه</option>
+                <option value="focus">نقطهٔ زوم‌شده</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="preview-column">
+            <span class="preview-label">پیش‌نمایش افکت‌ها</span>
+            <div id="effect-preview" class="effect-preview" aria-hidden="true">
+              <div class="preview-scene">
+                <span class="preview-moon"></span>
+                <span class="preview-horizon"></span>
+                <span class="preview-road"></span>
+                <b>SCZ</b>
+              </div>
+              <span class="preview-defocus"></span>
+              <span class="preview-tone"></span>
+              <span class="preview-vignette"></span>
+              <span class="preview-pixels"></span>
+              <span class="preview-mask"></span>
+              <span class="preview-noise"></span>
+            </div>
+            <p class="preview-caption">برای پیش‌نمایش زنده روی سایت، آیکن افزونه را باز کنید.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="area-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="area-title">زوم کادری و نویگیشن</h2>
+            <p>انتخاب محدوده روی صفحه و جابه‌جایی با Drag هنگام زوم.</p>
+          </div>
+        </div>
+
+        <div class="mode-grid" role="radiogroup" aria-label="روش فعال‌سازی زوم کادری">
+          <label class="mode-option">
+            <input type="radio" name="area-mode" value="separate">
+            <span class="mode-content">
+              <strong>شورتکات جداگانه</strong>
+              <small>ترکیب مستقل برای رسم کادر.</small>
+            </span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="area-mode" value="shared">
+            <span class="mode-content">
+              <strong>Tap / Hold مشترک</strong>
+              <small>فشار کوتاه: زوم عادی؛ نگه‌داشتن: رسم کادر.</small>
+            </span>
+          </label>
+        </div>
+
+        <div id="area-shortcut-panel" class="area-shortcut-panel">
+          <button id="area-shortcut-recorder" class="shortcut-recorder compact-recorder" type="button">
+            <span class="shortcut-label">شورتکات رسم کادر</span>
+            <span id="area-shortcut-value" class="key-row" dir="ltr"></span>
+            <span class="record-hint">برای تغییر کلیک کنید</span>
+          </button>
+        </div>
+
+        <div class="timing-grid area-controls-grid">
+          <div class="control-group compact">
+            <div class="control-label">
+              <label for="area-padding">پدینگ اطراف کادر</label>
+              <output id="area-padding-output" for="area-padding">32 px</output>
+            </div>
+            <input id="area-padding" type="range" min="0" max="240" step="2">
+          </div>
+          <div class="control-group compact shared-only-control">
+            <div class="control-label">
+              <label for="area-hold-delay">زمان تشخیص Hold</label>
+              <output id="area-hold-delay-output" for="area-hold-delay">280 ms</output>
+            </div>
+            <input id="area-hold-delay" type="range" min="150" max="900" step="10">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="area-shortcut-panel nav-panel">
+          <button id="navigation-shortcut-recorder" class="shortcut-recorder compact-recorder" type="button">
+            <span class="shortcut-label">شورتکات نویگیشن (Grab &amp; Drag)</span>
+            <span id="navigation-shortcut-value" class="key-row" dir="ltr"></span>
+            <span class="record-hint">برای تغییر کلیک کنید</span>
+          </button>
+        </div>
+
+        <div class="control-group compact navigation-sensitivity-control">
+          <div class="control-label">
+            <label for="navigation-sensitivity">حساسیت Drag</label>
+            <output id="navigation-sensitivity-output" for="navigation-sensitivity">1.00×</output>
+          </div>
+          <input id="navigation-sensitivity" type="range" min="0.2" max="2" step="0.05">
+        </div>
+        <p class="help">در حالت رسم کادر، نگه‌داشتن شورتکات نویگیشن انتخاب هوشمند عناصر را فعال می‌کند.</p>
+      </section>
+
+      <div class="actions">
+        <button id="save-button" class="primary" type="submit">ذخیرهٔ تنظیمات</button>
+        <button id="reset-button" class="secondary" type="button">بازنشانی پیش‌فرض‌ها</button>
+        <button id="export-button" class="secondary" type="button">خروجی JSON</button>
+        <button id="import-button" class="secondary" type="button">ورود JSON</button>
+        <button id="clear-site-profiles" class="secondary" type="button">حذف پروفایل‌های سایت</button>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+        <span id="status" class="status" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+
+    <aside class="notice">
+      <strong>نکته:</strong>
+      این افزونه روی صفحات عادی وب فعال است و به‌دلیل محدودیت‌های Chrome روی صفحات داخلی مانند <code>chrome://</code> و Web Store کار نمی‌کند.
+    </aside>
+  </main>
+  <script src="shared/settings.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smooth Cursor Zoom</title>
+  <link rel="stylesheet" href="shared/theme.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="title-wrap">
+      <h1>پیش‌نمایش زنده</h1>
+      <span class="brand">Smooth Cursor Zoom</span>
+    </div>
+    <div class="header-actions">
+      <span id="live-badge" class="live-badge"><i></i><span class="live-text">LIVE</span></span>
+      <button id="open-options" class="icon-btn" type="button" title="تنظیمات کامل" aria-label="تنظیمات کامل">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <p id="preview-status" class="preview-status">در حال اتصال به صفحه…</p>
+
+  <nav class="tabs" role="tablist" aria-label="بخش‌های پنل">
+    <button class="tab active" type="button" role="tab" aria-selected="true" data-tab="zoom">زوم و حرکت</button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-tab="visual">تصویر و افکت</button>
+    <button class="tab" type="button" role="tab" aria-selected="false" data-tab="site">سایت فعلی</button>
+  </nav>
+
+  <main>
+    <div class="tab-panel active" data-panel="zoom">
+      <section class="group">
+        <div class="control" data-key="zoom">
+          <div class="label-row"><label for="zoom">مقدار زوم</label><span><output id="zoom-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="zoom" type="range" min="1.1" max="6" step="0.05">
+        </div>
+        <div class="control" data-key="motionBlur">
+          <div class="label-row"><label for="motionBlur">Motion Blur</label><span><output id="motionBlur-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="motionBlur" type="range" min="0" max="16" step="0.5">
+        </div>
+        <div class="control" data-key="cursorScale">
+          <div class="label-row"><label for="cursorScale">بزرگ‌نمایی کرسر</label><span><output id="cursorScale-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="cursorScale" type="range" min="1" max="4" step="0.05">
+        </div>
+      </section>
+
+      <section class="group">
+        <h2 class="group-title">کادر انتخابی و نویگیشن</h2>
+        <div class="control select-control" data-key="areaMode">
+          <div class="label-row"><label for="areaMode">روش فعال‌سازی کادر</label><button class="reset" type="button" title="پیش‌فرض">↺</button></div>
+          <select id="areaMode"><option value="separate">شورتکات جداگانه</option><option value="shared">Tap / Hold مشترک</option></select>
+        </div>
+        <div id="popup-area-shortcut" class="shortcut-control">
+          <div class="label-row"><span>شورتکات رسم کادر</span><button id="reset-area-shortcut" class="reset" type="button" title="پیش‌فرض">↺</button></div>
+          <button id="record-area-shortcut" class="record-shortcut" type="button">
+            <span id="popup-area-shortcut-value" dir="ltr"></span>
+            <small>برای تغییر کلیک کنید</small>
+          </button>
+        </div>
+        <div class="control" data-key="areaPadding">
+          <div class="label-row"><label for="areaPadding">پدینگ کادر</label><span><output id="areaPadding-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="areaPadding" type="range" min="0" max="240" step="2">
+        </div>
+        <div class="control" data-key="areaHoldDelay">
+          <div class="label-row"><label for="areaHoldDelay">زمان تشخیص Hold</label><span><output id="areaHoldDelay-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="areaHoldDelay" type="range" min="150" max="900" step="10">
+        </div>
+        <div id="popup-navigation-shortcut" class="shortcut-control">
+          <div class="label-row"><span>شورتکات نویگیشن</span><button id="reset-navigation-shortcut" class="reset" type="button" title="پیش‌فرض">↺</button></div>
+          <button id="record-navigation-shortcut" class="record-shortcut" type="button">
+            <span id="popup-navigation-shortcut-value" dir="ltr"></span>
+            <small>برای تغییر کلیک کنید</small>
+          </button>
+        </div>
+        <div class="control" data-key="navigationSensitivity">
+          <div class="label-row"><label for="navigationSensitivity">حساسیت Drag</label><span><output id="navigationSensitivity-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="navigationSensitivity" type="range" min="0.2" max="2" step="0.05">
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-panel" data-panel="visual" hidden>
+      <section class="group">
+        <h2 class="group-title">نور و فوکوس</h2>
+        <div class="control" data-key="pageDefocus">
+          <div class="label-row"><label for="pageDefocus">دی‌فوکوس صفحه</label><span><output id="pageDefocus-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="pageDefocus" type="range" min="0" max="14" step="0.1">
+        </div>
+        <div class="control" data-key="brightness">
+          <div class="label-row"><label for="brightness">روشنایی</label><span><output id="brightness-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="brightness" type="range" min="40" max="180" step="1">
+        </div>
+        <div class="control" data-key="contrast">
+          <div class="label-row"><label for="contrast">کنتراست</label><span><output id="contrast-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="contrast" type="range" min="40" max="220" step="1">
+        </div>
+        <div class="control" data-key="vignette">
+          <div class="label-row"><label for="vignette">وینیت</label><span><output id="vignette-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="vignette" type="range" min="0" max="100" step="1">
+        </div>
+        <div class="control select-control" data-key="vignetteCenter">
+          <div class="label-row"><label for="vignetteCenter">مرکز وینیت</label><button class="reset" type="button" title="پیش‌فرض">↺</button></div>
+          <select id="vignetteCenter"><option value="viewport">مرکز صفحه</option><option value="focus">نقطهٔ زوم‌شده</option></select>
+        </div>
+      </section>
+
+      <section class="group">
+        <h2 class="group-title">نمایشگر و بافت</h2>
+        <div class="control" data-key="pixelStrength">
+          <div class="label-row"><label for="pixelStrength">ساب‌پیکسل RGB</label><span><output id="pixelStrength-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="pixelStrength" type="range" min="0" max="100" step="1">
+        </div>
+        <div class="control" data-key="pixelSize">
+          <div class="label-row"><label for="pixelSize">اندازهٔ پیکسل</label><span><output id="pixelSize-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="pixelSize" type="range" min="2" max="10" step="0.5">
+        </div>
+        <div class="control" data-key="rgbStrength">
+          <div class="label-row"><label for="rgbStrength">ماسک RGB</label><span><output id="rgbStrength-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="rgbStrength" type="range" min="0" max="100" step="1">
+        </div>
+        <div class="control" data-key="toneStrength">
+          <div class="label-row"><label for="toneStrength">رنگ سینمایی</label><span><output id="toneStrength-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="toneStrength" type="range" min="0" max="100" step="1">
+        </div>
+        <div class="control" data-key="noiseStrength">
+          <div class="label-row"><label for="noiseStrength">نویز و گرین</label><span><output id="noiseStrength-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="noiseStrength" type="range" min="0" max="100" step="1">
+        </div>
+        <div class="control" data-key="flickerStrength">
+          <div class="label-row"><label for="flickerStrength">فلیکر CRT</label><span><output id="flickerStrength-output"></output><button class="reset" type="button" title="پیش‌فرض">↺</button></span></div>
+          <input id="flickerStrength" type="range" min="0" max="100" step="1">
+        </div>
+      </section>
+    </div>
+
+    <div class="tab-panel" data-panel="site" hidden>
+      <section class="group">
+        <div class="site-heading">
+          <h2 class="group-title">سازگاری سایت</h2>
+          <code id="current-site">—</code>
+        </div>
+        <div class="compat-grid">
+          <label>موتور زوم
+            <select id="site-engine">
+              <option value="auto">خودکار</option>
+              <option value="document">Document</option>
+              <option value="body">Safe Body</option>
+            </select>
+          </label>
+          <label>پروفایل اجرا
+            <select id="site-performance">
+              <option value="auto">خودکار</option>
+              <option value="quality">کیفیت کامل</option>
+              <option value="performance">Performance</option>
+            </select>
+          </label>
+        </div>
+        <label class="compat-toggle"><input id="site-stabilize" type="checkbox"> پایدارسازی منوها و Popupها</label>
+        <div class="compat-actions">
+          <button id="save-site-profile" class="btn-outline" type="button">ذخیره برای این سایت</button>
+          <button id="reset-site-profile" class="btn-ghost" type="button">حذف پروفایل</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-row">
+      <button id="save" class="primary" type="button">ذخیره</button>
+      <button id="start-area-selection" class="area-button" type="button">رسم کادر</button>
+      <button id="reset-all" class="secondary" type="button">پیش‌فرض</button>
+    </div>
+    <span id="save-status" role="status" aria-live="polite"></span>
+  </footer>
+
+  <script src="shared/settings.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
